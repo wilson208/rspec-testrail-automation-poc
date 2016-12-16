@@ -40,17 +40,17 @@ module TestRail
         add_test_case_to_test_rail(tc[:name], tc[:file_path], tc[:line])
       end
 
-      test_cases_to_remove = get_test_rail_cases_to_remove
-      puts "To Remove: #{test_cases_to_remove.size} Test Cases"
-      test_cases_to_remove.each do |tc|
-        delete_test_case_in_test_rail(tc[:id])
-      end
-
-      test_cases_to_update = get_test_rail_cases_to_update
-      puts "To Update: #{test_cases_to_update.size} Test Cases"
-      test_cases_to_update.each do |tc|
-        update_test_case_to_test_rail(tc[:id], tc[:file_path], tc[:line])
-      end
+      # test_cases_to_remove = get_test_rail_cases_to_remove
+      # puts "To Remove: #{test_cases_to_remove.size} Test Cases"
+      # test_cases_to_remove.each do |tc|
+      #   delete_test_case_in_test_rail(tc[:id])
+      # end
+      #
+      # test_cases_to_update = get_test_rail_cases_to_update
+      # puts "To Update: #{test_cases_to_update.size} Test Cases"
+      # test_cases_to_update.each do |tc|
+      #   update_test_case_to_test_rail(tc[:id], tc[:file_path], tc[:line])
+      # end
     end
 
     private
@@ -80,14 +80,14 @@ module TestRail
 
     def get_test_cases_to_add_to_test_rail
       existing_test_cases = get_suite_test_cases
-      puts existing_test_cases
       self.test_result_reader.test_cases.select do |result_tc|
-        existing_test = !existing_test_cases.select do |test_rail_tc|
-          section_id = get_sub_section(result_tc[:file_path])[:id]
-          test_rail_tc[:name] == result_tc[:name] && test_rail_tc[:section_id] == section_id
-        end
+        section_id = get_sub_section(result_tc[:file_path])[:id]
 
-        existing_test == false || existing_test.size == 0
+        !existing_test_cases.any? do |test_rail_tc|
+          name_same = test_rail_tc[:name].eql?(result_tc[:name])
+          section_same = test_rail_tc[:section_id] == section_id
+          name_same == true && section_same == true
+        end
       end
     end
 
